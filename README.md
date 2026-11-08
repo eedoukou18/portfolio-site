@@ -1,5 +1,7 @@
 # Portfolio (React + Vite)
 
+This is my personal website I vibe-coded with Claude AI as I tried learning front-end dev. This might not be perfect and would definitely have some errors. I assure you that I am stil learning and improving. Notify me of any problem/error when you see one, kindly reach out. Thanks in advance.
+
 This is the same two-mode portfolio site, rebuilt in React so you can learn
 the basics while extending it.
 
