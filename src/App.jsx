@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react'
 
 const projects = [
+    { category: 'creative', tag: 'Brand Design', title: 'Album Merch Design',
+    desc: 'I designed a merch collection for a Ghanaian music artist, my bro(BaggyTheScribe), including t-shirts and singlet.',
+    meta: '2026 · Photoshop, Illustrator, Pinterest, ...My Creative mind',
+        files: [
+      { src: '/work/concept 3.jpeg', name: 'INTRO GRAPHIC', date: '24/10/2026 9:36 am', type: 'JPG File' },
+      { src: '/work/concept.jpeg', name: 'CONCEPT 2.jpg', date: '08/11/2026 3:34 am', type: 'JPEG File' },
+      { src: '/work/merch1.jpeg', name: 'merch 2', date: '08/11/2026 4:17 am', type: 'JPG File' },
+    ] },
   { category: 'creative', tag: 'Brand Identity', title: 'Nocturne Coffee — full rebrand',
-    desc: 'Logo system, packaging, and a print-first brand book for a small-batch roaster.',
+    desc: 'Logo system, pacfkaging, and a print-first brand book for a small-batch roaster.',
     meta: '2025 · Illustrator, Figma' },
   { category: 'creative', tag: 'UI / Product', title: 'Fieldnote — journaling app',
     desc: 'Design system and iOS UI for a 40k-user journaling app, from wireframe to shipped build.',
@@ -239,7 +247,7 @@ export default function App() {
           </div>
         )}
 
-              {page === 'work' && openProject && (
+                    {page === 'work' && openProject && (
         <div className="xp-backdrop" onClick={() => setOpenProject(null)}>
           <div className={maxed ? 'xp-window max' : 'xp-window'} onClick={(e) => e.stopPropagation()}>
             <div className="xp-titlebar">
@@ -260,7 +268,7 @@ export default function App() {
             <div className="xp-body">
               <div className="xp-tag">{openProject.tag}</div>
               <h2>{openProject.title}</h2>
-              <div className="xp-image">Project images go here</div>
+              <XPFiles key={openProject.title} project={openProject} />
               <p>{openProject.desc}</p>
               <div className="xp-meta">{openProject.meta}</div>
             </div>
@@ -292,6 +300,53 @@ export default function App() {
     </div>
   )
 }
+}
+
+function XPGallery({ images, title }) {
+  const [i, setI] = useState(0)
+  const [zoom, setZoom] = useState(false)
+  const n = images.length
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowLeft') setI((v) => (v - 1 + n) % n)
+      if (e.key === 'ArrowRight') setI((v) => (v + 1) % n)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [n])
+
+  return (
+    <div className="xp-film">
+      <div className="xp-stage">
+        {n > 1 && (
+          <button className="xp-arrow left" aria-label="Previous" onClick={() => setI((i - 1 + n) % n)}>‹</button>
+        )}
+        <img src={images[i]} alt={`${title} ${i + 1}`} onClick={() => setZoom(true)} />
+        {n > 1 && (
+          <button className="xp-arrow right" aria-label="Next" onClick={() => setI((i + 1) % n)}>›</button>
+        )}
+      </div>
+      <div className="xp-status">{i + 1} of {n} · click the picture to enlarge</div>
+
+      {n > 1 && (
+        <div className="xp-thumbs">
+          {images.map((src, k) => (
+            <button key={src} className={k === i ? 'active' : ''} onClick={() => setI(k)}>
+              <img src={src} alt="" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {zoom && (
+        <div className="xp-zoom" onClick={() => setZoom(false)}>
+          <img src={images[i]} alt={title} />
+          <span>Click anywhere to close</span>
+        </div>
+      )}
+    </div>
+  )
 }
 
 // Each letter = one pixel. K=black L=light yellow Y=yellow
@@ -328,5 +383,64 @@ function PixelFolder({ size = 72 }) {
         )
       )}
     </svg>
+  )
+}
+
+
+function fileTypeOf(f) {
+  if (f.type) return f.type
+  const ext = (f.src.split('.').pop() || '').toLowerCase()
+  if (ext === 'jpg') return 'JPG File'
+  if (ext === 'jpeg') return 'JPEG File'
+  return ext.toUpperCase() + ' File'
+}
+
+function FileIcon() {
+  return (
+    <svg width="20" height="22" viewBox="0 0 20 22" aria-hidden="true">
+      <path d="M2 1h11l5 5v15H2z" fill="#fff" stroke="#5a6b9a" />
+      <path d="M13 1v5h5" fill="#dfe6f8" stroke="#5a6b9a" />
+      <rect x="4.5" y="9" width="11" height="9" fill="#3b7bf5" />
+      <path d="M4.5 18l3.5-4 2.5 2.5 2-2 3 3.5z" fill="#fff" />
+    </svg>
+  )
+}
+
+function XPFiles({ project }) {
+  const [viewing, setViewing] = useState(null)
+  const files = project.files
+    || (project.images || []).map((src) => ({ src, name: src.split('/').pop() }))
+
+  if (files.length === 0) {
+    return <div className="xp-image">This folder is empty.</div>
+  }
+
+  return (
+    <div className="xp-files">
+      <div className="xp-list-head">
+        <span />
+        <span>Name</span>
+        <span>Date modified</span>
+        <span>Type</span>
+      </div>
+
+      {files.map((f) => (
+        <button key={f.src} className="xp-row" onClick={() => setViewing(f)}>
+          <FileIcon />
+          <span className="xp-name">{f.name}</span>
+          <span className="xp-date">{f.date || '—'}</span>
+          <span className="xp-type">{fileTypeOf(f)}</span>
+        </button>
+      ))}
+
+      <div className="xp-statusbar">{files.length} object{files.length === 1 ? '' : 's'}</div>
+
+      {viewing && (
+        <div className="xp-zoom" onClick={() => setViewing(null)}>
+          <img src={viewing.src} alt={viewing.name} />
+          <span>{viewing.name} · click anywhere to close</span>
+        </div>
+      )}
+    </div>
   )
 }
