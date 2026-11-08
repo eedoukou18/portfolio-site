@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 const projects = [
     { category: 'creative', tag: 'Brand Design', title: 'Album Merch Design',
     desc: 'I designed a merch collection for a Ghanaian music artist, my bro(BaggyTheScribe), including t-shirts and singlet.',
-    meta: '2026 · Photoshop, Illustrator, Pinterest, ...My Creative mind',
+    meta: '2026 · Photoshop, Illustrator, Pinterest, My Creative mind',
         files: [
       { src: '/work/concept 3.jpeg', name: 'INTRO GRAPHIC', date: '24/10/2026 9:36 am', type: 'JPG File' },
       { src: '/work/concept.jpeg', name: 'CONCEPT 2.jpg', date: '08/11/2026 3:34 am', type: 'JPEG File' },
